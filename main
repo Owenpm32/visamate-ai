@@ -1,0 +1,15 @@
+visamate-ai/
+├── pages/
+│   ├── index.js
+│   ├── chat.js
+│   └── download.js
+│
+│   └── api/
+│       ├── chat.js
+│       ├── generate-pdf.js
+│       └── create-checkout-session.js
+│
+├── utils/
+│   └── generateChecklistPDF.js
+├── .env.local
+├── package.json
