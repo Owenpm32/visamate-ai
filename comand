@@ -1,0 +1,39 @@
+import { useState } from "react";
+
+export default function Chat() {
+  const [msgs, setMsgs] = useState([]);
+  const [input, setInput] = useState("");
+
+  async function send() {
+    if (!input) return;
+    const user = { role: "user", text: input };
+    setMsgs((m) => [...m, user]);
+    setInput("");
+
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ message: input }),
+    });
+    const { reply } = await res.json();
+    setMsgs((m) => [...m, { role: "bot", text: reply }]);
+  }
+
+  return (
+    <main style={{padding:20}}>
+      <h1>VisaMate AI</h1>
+      <div style={{ maxHeight:400, overflowY:"auto", margin: "1em 0" }}>
+        {msgs.map((m,i)=>(
+          <p key={i}><b>{m.role=== "user"?"You":"VisaMate"}:</b> {m.text}</p>
+        ))}
+      </div>
+      <input
+        value={input}
+        onChange={(e)=>setInput(e.target.value)}
+        style={{width:"70%", padding:"8px"}}
+        placeholder="Ask an immigration question…"
+      />
+      <button onClick={send} style={{padding:"8px",marginLeft:"8px"}}>Send</button>
+    </main>
+  );
+}
