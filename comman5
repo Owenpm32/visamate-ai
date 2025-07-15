@@ -1,0 +1,32 @@
+import { useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+
+export default function Home() {
+  const [checklist, setChecklist] = useState("");
+
+  const pay = async () => {
+    const res = await fetch("/api/create-checkout-session", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ checklist }),
+    });
+    const { sessionId } = await res.json();
+    const stripe = await stripePromise;
+    await stripe.redirectToCheckout({ sessionId });
+  };
+
+  return (
+    <div style={{padding:20}}>
+      <h1>VisaMate AI</h1>
+      <textarea
+        placeholder="Paste checklist text here before purchasing"
+        value={checklist}
+        onChange={(e) => setChecklist(e.target.value)}
+        style={{ width:"100%", height:150 }}
+      />
+      <button onClick={pay} style={{ marginTop:10, padding:10 }}>Buy PDF ($9)</button>
+    </div>
+  );
+}
