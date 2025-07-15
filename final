@@ -1,0 +1,17 @@
+import { useEffect } from "react";
+
+export default function Download({ query }) {
+  const { check } = query;
+
+  useEffect(() => {
+    if (check) {
+      window.location.href = `/api/generate-pdf?checklist=${encodeURIComponent(check)}`;
+    }
+  }, [check]);
+
+  return <p>Generating your PDF… if nothing happens, click <a href={`/api/generate-pdf?checklist=${encodeURIComponent(check)}`}>here</a>.</p>;
+}
+
+export async function getServerSideProps({ query }) {
+  return { props: { query } };
+}
